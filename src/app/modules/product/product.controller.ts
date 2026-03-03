@@ -7,8 +7,21 @@ import pick from '../../../shared/pick';
 import { productFilterableFields } from './product.constants';
 
 
-const getAllProducts: RequestHandler = catchAsync(async (req, res) => {
 
+
+const createProduct: RequestHandler = catchAsync(async (req, res) => {
+  const product = req.body;
+  const createdProduct = await productService.createProduct(product);
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message:"Create Product successfully",
+    data: createdProduct,
+  });
+});
+
+
+const getAllProducts: RequestHandler = catchAsync(async (req, res) => {
   const options = pick(req.query, ['sortBy', 'sortOrder', 'page', 'limit']);
   const filters = pick(req.query,productFilterableFields);
   const result = await productService.getAllProducts(options, filters);
@@ -32,16 +45,6 @@ const getProductById: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const createProduct: RequestHandler = catchAsync(async (req, res) => {
-  const product = req.body;
-  const createdProduct = await productService.createProduct(product);
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message:"Create Product successfully",
-    data: createdProduct,
-  });
-});
 
 const updateProduct: RequestHandler = catchAsync(async (req, res) => {
   const { id } = req.params;
