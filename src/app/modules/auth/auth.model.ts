@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import mongoose, { Schema } from "mongoose";
 import config from '../../../config';
 import { UserRole } from "../../../enums/user";
-import { IUser } from "./auth.interface";
+import { IUser, IUserModel } from "./auth.interface";
 
 
 // 🔹 Driver Sub Schema
@@ -83,7 +83,6 @@ const UserSchema = new Schema<IUser>(
       default: UserRole.CUSTOMER,
     },
 
-    // 🔥 Driver Info (Only for Driver Role)
     driverInfo: {
       type: driverInfoSchema,
       required: function () {
@@ -110,25 +109,31 @@ UserSchema.pre(
 );
 
 //check user exit  Static Method
-UserSchema.statics.isUserExist = async function (
-  phoneNumber: string
-): Promise<IUser | null> {
-  return await this.findOne(
-    { phoneNumber },
-    { _id: 1, password: 1, role: 1, phoneNumber: 1 }
-  );
-};
+// UserSchema.statics.isUserExist = async function (
+//   phoneNumber: string
+// ): Promise<IUser | null> {
+//   return await this.findOne(
+//     { phoneNumber },
+//     { _id: 1, password: 1, role: 1, phoneNumber: 1 }
+//   );
+// };
 
-// check  password match  Static Method
+UserSchema.statics.isUserExist = async function (
+  identifier: string
+) {
+  return await this.findOne({
+    $or: [{ email: identifier }, { phoneNumber: identifier }],
+  }).select('+password');
+};
 
 UserSchema.statics.isPasswordMatched = async function (
   givenPassword: string,
   savedPassword: string
-): Promise<boolean> {
+) {
   return await bcrypt.compare(givenPassword, savedPassword);
 };
 
 
-const User = mongoose.model<IUser>('User', UserSchema);
+const User = mongoose.model<IUser, IUserModel>('User', UserSchema);
 
 export default User;

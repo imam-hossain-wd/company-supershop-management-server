@@ -1,6 +1,4 @@
-//jwt create token and varify token helper
-
-import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
+import jwt, { JwtPayload, Secret, SignOptions } from 'jsonwebtoken';
 
 const createToken = (
   payload: Record<string, unknown>,
@@ -9,7 +7,7 @@ const createToken = (
 ): string => {
   return jwt.sign(payload, secret, {
     expiresIn: expireTime,
-  });
+  } as SignOptions); // Casting to SignOptions solves the overload mismatch
 };
 
 const verifyToken = (token: string, secret: Secret): JwtPayload => {

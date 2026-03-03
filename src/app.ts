@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // global error handler
 app.use(globalErrorHandler);
 
-// app.use('/api/v1', routes);
+app.use('/api/v1', routes);
 
 // server root page
 app.use('/api/v1', (req: Request, res: Response, next: NextFunction) => {
