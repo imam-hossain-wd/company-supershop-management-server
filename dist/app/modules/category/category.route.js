@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CategoryRoutes = void 0;
+const express_1 = require("express");
+const category_controller_1 = require("./category.controller");
+const router = (0, express_1.Router)();
+router.post('/create', category_controller_1.CategoryController.createCategory);
+router.get('/', category_controller_1.CategoryController.GetAllCategory);
+router.patch('/:id', category_controller_1.CategoryController.updateCategory);
+router.delete('/:id', category_controller_1.CategoryController.deleteCategory);
+exports.CategoryRoutes = router;

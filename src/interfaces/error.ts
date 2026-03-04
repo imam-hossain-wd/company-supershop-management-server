@@ -1,4 +1,5 @@
 export type IGenericErrorMessage = {
-  path: string | number;
+  path: PropertyKey | string;
   message: string;
 };
+
